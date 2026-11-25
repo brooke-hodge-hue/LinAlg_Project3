@@ -1,0 +1,36 @@
+%%Project 3 - Code Start
+
+%% Part 1 - Loading the Images 
+%Download the image dataset and load all images corresponding to the first
+%13 subjects
+dataFolder = fullfile('eigenfaces-dataset', 'unpadded');
+numSubjects = 13;
+trainingImages = [];
+labels = [];
+
+for subj = 1:numSubjects
+    imageFiles = dir(fullfile(dataFolder,sprintf('subject%02d*.pgm', subj)));
+    for k = 1:length(imageFiles)
+        img = imread(fullfile(dataFolder, imageFiles(k).name));
+        trainingImages = [trainingImages, double(img(:))];
+        labels = [labels; subj];
+    end
+end
+
+%% Part 2 - Centering the data matrix
+%Running Step 2 the center matrix script 
+
+X = trainingImages;
+[A, mu] = centerImages(X);
+
+%% Part 3 - Computing the PCA
+[U, S, V, singularValues] = computePCA(A);
+
+%we need to plot the singular values 
+figure;
+plot(singularValues);
+xlabel('Singular Value Index');
+ylabel('Singular Value');
+title('Singular Values of th ')
+
+   
