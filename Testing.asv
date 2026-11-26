@@ -23,14 +23,29 @@ end
 X = trainingImages;
 [A, mu] = centerImages(X);
 
-%% Part 3 - Computing the PCA
-[U, S, V, singularValues] = computePCA(A);
+%% Part 3 - Computing the PCA, errrors, and storage reduction for 90% recovery 
+[U, S, V, singularValues] = computePCA(A, X, mu);
 
-%we need to plot the singular values 
-figure;
-plot(singularValues);
-xlabel('Singular Value Index');
-ylabel('Singular Value');
-title('Singular Values of th ')
+%% Part 4 - Reconstructing the images 
+
+
+features = [20, 50, 70, 100];
+reconstructImages(X, U, mu, imageSize, features);
+
+%% Part 5 - Loading the testing images 
+testImages = [];
+for subj = 14:15
+    imageFiles = ir(fullfile(dataFolder,sprintf('subject%02d*.pgm', subj)));
+    for k = 1:length(imageFiles)
+        img = imread(fullfile(dataFolder, imageFiles(k).name));
+        TestImages = [TestImages, double(img(:))];
+    end
+end
+
+Xtest = TestImages;
+features = 50;
+reconstructImages(Xtest, U, mu, imageSize, features);
+
+
 
    

@@ -1,0 +1,61 @@
+%Part 3 doing the PCA
+
+function[U, S, V, singularValues] = computePCA(A,X,mu)
+
+%Using the svc to help calculate the eigenvalues and eigenvectors 
+[U, S, V] = svd(A, 'econ');
+
+%Now finding the singular values 
+singularValues = diag(S);
+
+%we need to plot the singular values 
+figure;
+plot(singularValues);
+xlabel('Singular Value Index');
+ylabel('Singular Value');
+title('Singular Values of the Training Dataset');
+grid on;
+
+%Now apart of step 3 - we have to do an approximation error 
+%How many principal components are needed to achieve 30% error? 20%? 10%? 5%?
+
+%X - original matrix 
+%U - left singular vectors from the SVD 
+%mu - training mean image 
+%k - number of principle components retained 
+
+%center images using training mean 
+A = X - mu;
+thresholds = [30, 20, 10, 5];
+
+%calculate the error for each number of components
+for k = 1:size(U,2)
+    Uk = U(:,1:k);
+    C = Uk' * A;
+    Xk = Uk * C + mu;
+    errors(k) = 100 * sum((X-Xk).^2, 'all') / sum(X.^2, 'all');
+
+end
+
+% find the number of components for each threshold
+for i = 1:length(thresholds)
+    k = find(errors <= thresholds(i), 1);
+    fprintf('Target error: %d%%\n', thresholds(i));
+    fprintf('Components needed: %d\n', k);
+    fprintf('Actual error: %.2f%%\n\n', errors(k));
+end
+
+%By what factor can we reduce the storage required to store
+%each image if we only need to recover 90% of the data in the image?
+%Include the training mean image in the storage calculation.
+
+k90 = find(errors <= 10,1);
+
+[M,N] = size(X);
+
+
+
+
+
+
+
